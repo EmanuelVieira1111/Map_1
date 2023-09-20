@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Wind at 10 km/h North (0º)</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Landuse_3.js"></script>
+        <script src="data/Rateofspreadmetersminute_4.js"></script>
+        <script src="data/Numberofpathsforfire_5.js"></script>
+        <script src="data/Firearrivaltimeminutes_6.js"></script>
+        <script src="data/Countersfirearrivaltime_7.js"></script>
+        <script src="data/Fireinitialstate_8.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        map.createPane('pane_OSMStandard_1');
+        map.getPane('pane_OSMStandard_1').style.zIndex = 401;
+        var layer_OSMStandard_1 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_1',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_1;
+        map.addLayer(layer_OSMStandard_1);
+        map.createPane('pane_Altitudes_2');
+        map.getPane('pane_Altitudes_2').style.zIndex = 402;
+        var img_Altitudes_2 = 'data/Altitudes_2.png';
+        var img_bounds_Altitudes_2 = [[41.08933504574749,-8.115636494273007],[41.2490406305084,-7.875844207810134]];
+        var layer_Altitudes_2 = new L.imageOverlay(img_Altitudes_2,
+                                              img_bounds_Altitudes_2,
+                                              {pane: 'pane_Altitudes_2'});
+        bounds_group.addLayer(layer_Altitudes_2);
+        map.addLayer(layer_Altitudes_2);
+        function pop_Landuse_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n1_C</th>\
+                        <td>' + (feature.properties['COS18n1_C'] !== null ? autolinker.link(feature.properties['COS18n1_C'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n1_L</th>\
+                        <td>' + (feature.properties['COS18n1_L'] !== null ? autolinker.link(feature.properties['COS18n1_L'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n2_C</th>\
+                        <td>' + (feature.properties['COS18n2_C'] !== null ? autolinker.link(feature.properties['COS18n2_C'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n2_L</th>\
+                        <td>' + (feature.properties['COS18n2_L'] !== null ? autolinker.link(feature.properties['COS18n2_L'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n3_C</th>\
+                        <td>' + (feature.properties['COS18n3_C'] !== null ? autolinker.link(feature.properties['COS18n3_C'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n3_L</th>\
+                        <td>' + (feature.properties['COS18n3_L'] !== null ? autolinker.link(feature.properties['COS18n3_L'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n4_C</th>\
+                        <td>' + (feature.properties['COS18n4_C'] !== null ? autolinker.link(feature.properties['COS18n4_C'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">COS18n4_L</th>\
+                        <td>' + (feature.properties['COS18n4_L'] !== null ? autolinker.link(feature.properties['COS18n4_L'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area_ha</th>\
+                        <td>' + (feature.properties['Area_ha'] !== null ? autolinker.link(feature.properties['Area_ha'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Landuse_3_0(feature) {
+            switch(String(feature.properties['COS18n1_L'])) {
+                case 'Agricultura':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,97,17,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Espaços descobertos ou com pouca vegetação':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,164,64,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Florestas':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,228,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Massas de água superficiais':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(30,37,238,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Matos':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(7,79,23,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pastagens':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,48,170,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Territórios artificializados':
+                    return {
+                pane: 'pane_Landuse_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,211,211,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Landuse_3');
+        map.getPane('pane_Landuse_3').style.zIndex = 403;
+        map.getPane('pane_Landuse_3').style['mix-blend-mode'] = 'normal';
+        var layer_Landuse_3 = new L.geoJson(json_Landuse_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Landuse_3',
+            layerName: 'layer_Landuse_3',
+            pane: 'pane_Landuse_3',
+            onEachFeature: pop_Landuse_3,
+            style: style_Landuse_3_0,
+        });
+        bounds_group.addLayer(layer_Landuse_3);
+        map.addLayer(layer_Landuse_3);
+        function pop_Rateofspreadmetersminute_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">edge</th>\
+                        <td>' + (feature.properties['edge'] !== null ? autolinker.link(feature.properties['edge'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">edge_orig</th>\
+                        <td>' + (feature.properties['edge_orig'] !== null ? autolinker.link(feature.properties['edge_orig'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">edge_dest</th>\
+                        <td>' + (feature.properties['edge_dest'] !== null ? autolinker.link(feature.properties['edge_dest'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">trans_time</th>\
+                        <td>' + (feature.properties['trans_time'] !== null ? autolinker.link(feature.properties['trans_time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ros</th>\
+                        <td>' + (feature.properties['ros'] !== null ? autolinker.link(feature.properties['ros'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ros0</th>\
+                        <td>' + (feature.properties['ros0'] !== null ? autolinker.link(feature.properties['ros0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">num_paths_</th>\
+                        <td>' + (feature.properties['num_paths_'] !== null ? autolinker.link(feature.properties['num_paths_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Rateofspreadmetersminute_4_0(feature) {
+            if (feature.properties['ros'] >= 0.876981 && feature.properties['ros'] <= 13.908734 ) {
+                return {
+                pane: 'pane_Rateofspreadmetersminute_4',
+                opacity: 1,
+                color: 'rgba(252,253,191,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['ros'] >= 13.908734 && feature.properties['ros'] <= 26.940488 ) {
+                return {
+                pane: 'pane_Rateofspreadmetersminute_4',
+                opacity: 1,
+                color: 'rgba(251,135,97,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['ros'] >= 26.940488 && feature.properties['ros'] <= 39.972241 ) {
+                return {
+                pane: 'pane_Rateofspreadmetersminute_4',
+                opacity: 1,
+                color: 'rgba(182,55,122,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['ros'] >= 39.972241 && feature.properties['ros'] <= 53.003995 ) {
+                return {
+                pane: 'pane_Rateofspreadmetersminute_4',
+                opacity: 1,
+                color: 'rgba(80,18,123,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['ros'] >= 53.003995 && feature.properties['ros'] <= 66.035748 ) {
+                return {
+                pane: 'pane_Rateofspreadmetersminute_4',
+                opacity: 1,
+                color: 'rgba(0,0,4,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Rateofspreadmetersminute_4');
+        map.getPane('pane_Rateofspreadmetersminute_4').style.zIndex = 404;
+        map.getPane('pane_Rateofspreadmetersminute_4').style['mix-blend-mode'] = 'normal';
+        var layer_Rateofspreadmetersminute_4 = new L.geoJson(json_Rateofspreadmetersminute_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Rateofspreadmetersminute_4',
+            layerName: 'layer_Rateofspreadmetersminute_4',
+            pane: 'pane_Rateofspreadmetersminute_4',
+            onEachFeature: pop_Rateofspreadmetersminute_4,
+            style: style_Rateofspreadmetersminute_4_0,
+        });
+        bounds_group.addLayer(layer_Rateofspreadmetersminute_4);
+        map.addLayer(layer_Rateofspreadmetersminute_4);
+        function pop_Numberofpathsforfire_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">edge</th>\
+                        <td>' + (feature.properties['edge'] !== null ? autolinker.link(feature.properties['edge'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">edge_orig</th>\
+                        <td>' + (feature.properties['edge_orig'] !== null ? autolinker.link(feature.properties['edge_orig'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">edge_dest</th>\
+                        <td>' + (feature.properties['edge_dest'] !== null ? autolinker.link(feature.properties['edge_dest'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">trans_time</th>\
+                        <td>' + (feature.properties['trans_time'] !== null ? autolinker.link(feature.properties['trans_time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ros</th>\
+                        <td>' + (feature.properties['ros'] !== null ? autolinker.link(feature.properties['ros'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ros0</th>\
+                        <td>' + (feature.properties['ros0'] !== null ? autolinker.link(feature.properties['ros0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">num_paths_</th>\
+                        <td>' + (feature.properties['num_paths_'] !== null ? autolinker.link(feature.properties['num_paths_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Numberofpathsforfire_5_0(feature) {
+            if (feature.properties['num_paths_'] >= 1.000000 && feature.properties['num_paths_'] <= 100.000000 ) {
+                return {
+                pane: 'pane_Numberofpathsforfire_5',
+                opacity: 1,
+                color: 'rgba(252,253,191,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['num_paths_'] >= 100.000000 && feature.properties['num_paths_'] <= 200.000000 ) {
+                return {
+                pane: 'pane_Numberofpathsforfire_5',
+                opacity: 1,
+                color: 'rgba(251,135,97,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['num_paths_'] >= 200.000000 && feature.properties['num_paths_'] <= 300.000000 ) {
+                return {
+                pane: 'pane_Numberofpathsforfire_5',
+                opacity: 1,
+                color: 'rgba(182,55,122,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['num_paths_'] >= 300.000000 && feature.properties['num_paths_'] <= 400.000000 ) {
+                return {
+                pane: 'pane_Numberofpathsforfire_5',
+                opacity: 1,
+                color: 'rgba(80,18,123,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['num_paths_'] >= 400.000000 && feature.properties['num_paths_'] <= 458.000000 ) {
+                return {
+                pane: 'pane_Numberofpathsforfire_5',
+                opacity: 1,
+                color: 'rgba(0,0,4,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Numberofpathsforfire_5');
+        map.getPane('pane_Numberofpathsforfire_5').style.zIndex = 405;
+        map.getPane('pane_Numberofpathsforfire_5').style['mix-blend-mode'] = 'normal';
+        var layer_Numberofpathsforfire_5 = new L.geoJson(json_Numberofpathsforfire_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Numberofpathsforfire_5',
+            layerName: 'layer_Numberofpathsforfire_5',
+            pane: 'pane_Numberofpathsforfire_5',
+            onEachFeature: pop_Numberofpathsforfire_5,
+            style: style_Numberofpathsforfire_5_0,
+        });
+        bounds_group.addLayer(layer_Numberofpathsforfire_5);
+        map.addLayer(layer_Numberofpathsforfire_5);
+        function pop_Firearrivaltimeminutes_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">node</th>\
+                        <td>' + (feature.properties['node'] !== null ? autolinker.link(feature.properties['node'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">x</th>\
+                        <td>' + (feature.properties['x'] !== null ? autolinker.link(feature.properties['x'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">y</th>\
+                        <td>' + (feature.properties['y'] !== null ? autolinker.link(feature.properties['y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fire_arriv</th>\
+                        <td>' + (feature.properties['fire_arriv'] !== null ? autolinker.link(feature.properties['fire_arriv'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">n_paths</th>\
+                        <td>' + (feature.properties['n_paths'] !== null ? autolinker.link(feature.properties['n_paths'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">n_paths_in</th>\
+                        <td>' + (feature.properties['n_paths_in'] !== null ? autolinker.link(feature.properties['n_paths_in'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">n_paths_ou</th>\
+                        <td>' + (feature.properties['n_paths_ou'] !== null ? autolinker.link(feature.properties['n_paths_ou'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Firearrivaltimeminutes_6_0(feature) {
+            if (feature.properties['fire_arriv'] >= 0.000000 && feature.properties['fire_arriv'] <= 2000.000000 ) {
+                return {
+                pane: 'pane_Firearrivaltimeminutes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,4,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 2000.000000 && feature.properties['fire_arriv'] <= 4000.000000 ) {
+                return {
+                pane: 'pane_Firearrivaltimeminutes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,31,129,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 4000.000000 && feature.properties['fire_arriv'] <= 6000.000000 ) {
+                return {
+                pane: 'pane_Firearrivaltimeminutes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(241,96,93,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 6000.000000 && feature.properties['fire_arriv'] <= 7168.582232 ) {
+                return {
+                pane: 'pane_Firearrivaltimeminutes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,253,191,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Firearrivaltimeminutes_6');
+        map.getPane('pane_Firearrivaltimeminutes_6').style.zIndex = 406;
+        map.getPane('pane_Firearrivaltimeminutes_6').style['mix-blend-mode'] = 'normal';
+        var layer_Firearrivaltimeminutes_6 = new L.geoJson(json_Firearrivaltimeminutes_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Firearrivaltimeminutes_6',
+            layerName: 'layer_Firearrivaltimeminutes_6',
+            pane: 'pane_Firearrivaltimeminutes_6',
+            onEachFeature: pop_Firearrivaltimeminutes_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Firearrivaltimeminutes_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Firearrivaltimeminutes_6);
+        map.addLayer(layer_Firearrivaltimeminutes_6);
+        function pop_Countersfirearrivaltime_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">index</th>\
+                        <td>' + (feature.properties['index'] !== null ? autolinker.link(feature.properties['index'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fire_arriv</th>\
+                        <td>' + (feature.properties['fire_arriv'] !== null ? autolinker.link(feature.properties['fire_arriv'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">label</th>\
+                        <td>' + (feature.properties['label'] !== null ? autolinker.link(feature.properties['label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Countersfirearrivaltime_7_0(feature) {
+            if (feature.properties['fire_arriv'] >= 0.000000 && feature.properties['fire_arriv'] <= 2000.000000 ) {
+                return {
+                pane: 'pane_Countersfirearrivaltime_7',
+                opacity: 1,
+                color: 'rgba(0,0,4,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 2000.000000 && feature.properties['fire_arriv'] <= 4000.000000 ) {
+                return {
+                pane: 'pane_Countersfirearrivaltime_7',
+                opacity: 1,
+                color: 'rgba(114,31,129,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 4000.000000 && feature.properties['fire_arriv'] <= 6000.000000 ) {
+                return {
+                pane: 'pane_Countersfirearrivaltime_7',
+                opacity: 1,
+                color: 'rgba(241,96,93,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+            if (feature.properties['fire_arriv'] >= 6000.000000 && feature.properties['fire_arriv'] <= 7168.582232 ) {
+                return {
+                pane: 'pane_Countersfirearrivaltime_7',
+                opacity: 1,
+                color: 'rgba(252,253,191,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Countersfirearrivaltime_7');
+        map.getPane('pane_Countersfirearrivaltime_7').style.zIndex = 407;
+        map.getPane('pane_Countersfirearrivaltime_7').style['mix-blend-mode'] = 'normal';
+        var layer_Countersfirearrivaltime_7 = new L.geoJson(json_Countersfirearrivaltime_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Countersfirearrivaltime_7',
+            layerName: 'layer_Countersfirearrivaltime_7',
+            pane: 'pane_Countersfirearrivaltime_7',
+            onEachFeature: pop_Countersfirearrivaltime_7,
+            style: style_Countersfirearrivaltime_7_0,
+        });
+        bounds_group.addLayer(layer_Countersfirearrivaltime_7);
+        map.addLayer(layer_Countersfirearrivaltime_7);
+        function pop_Fireinitialstate_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Fireinitialstate_8_0() {
+            return {
+                pane: 'pane_Fireinitialstate_8',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,34,48,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Fireinitialstate_8');
+        map.getPane('pane_Fireinitialstate_8').style.zIndex = 408;
+        map.getPane('pane_Fireinitialstate_8').style['mix-blend-mode'] = 'normal';
+        var layer_Fireinitialstate_8 = new L.geoJson(json_Fireinitialstate_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Fireinitialstate_8',
+            layerName: 'layer_Fireinitialstate_8',
+            pane: 'pane_Fireinitialstate_8',
+            onEachFeature: pop_Fireinitialstate_8,
+            style: style_Fireinitialstate_8_0,
+        });
+        bounds_group.addLayer(layer_Fireinitialstate_8);
+        map.addLayer(layer_Fireinitialstate_8);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Wind at 10 km/h North (0º)</h2>';
+            };
+            title.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Fireinitialstate_8.png" /> Fire initial state': layer_Fireinitialstate_8,'Counters (fire arrival time) <br /><table><tr><td style="text-align: center;"><img src="legend/Countersfirearrivaltime_7_020000.png" /></td><td>0 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/Countersfirearrivaltime_7_200040001.png" /></td><td>2000 - 4000</td></tr><tr><td style="text-align: center;"><img src="legend/Countersfirearrivaltime_7_400060002.png" /></td><td>4000 - 6000</td></tr><tr><td style="text-align: center;"><img src="legend/Countersfirearrivaltime_7_600071693.png" /></td><td>6000 - 7169</td></tr></table>': layer_Countersfirearrivaltime_7,'Fire arrival time (minutes)<br /><table><tr><td style="text-align: center;"><img src="legend/Firearrivaltimeminutes_6_020000.png" /></td><td>0 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/Firearrivaltimeminutes_6_200040001.png" /></td><td>2000 - 4000</td></tr><tr><td style="text-align: center;"><img src="legend/Firearrivaltimeminutes_6_400060002.png" /></td><td>4000 - 6000</td></tr><tr><td style="text-align: center;"><img src="legend/Firearrivaltimeminutes_6_600071693.png" /></td><td>6000 - 7169</td></tr></table>': layer_Firearrivaltimeminutes_6,'Number of paths for fire<br /><table><tr><td style="text-align: center;"><img src="legend/Numberofpathsforfire_5_11000.png" /></td><td>1 - 100</td></tr><tr><td style="text-align: center;"><img src="legend/Numberofpathsforfire_5_1002001.png" /></td><td>100 - 200</td></tr><tr><td style="text-align: center;"><img src="legend/Numberofpathsforfire_5_2003002.png" /></td><td>200 - 300</td></tr><tr><td style="text-align: center;"><img src="legend/Numberofpathsforfire_5_3004003.png" /></td><td>300 - 400</td></tr><tr><td style="text-align: center;"><img src="legend/Numberofpathsforfire_5_4004584.png" /></td><td>400 - 458</td></tr></table>': layer_Numberofpathsforfire_5,'Rate of spread (meters/minute)<br /><table><tr><td style="text-align: center;"><img src="legend/Rateofspreadmetersminute_4_1140.png" /></td><td>1 - 14</td></tr><tr><td style="text-align: center;"><img src="legend/Rateofspreadmetersminute_4_14271.png" /></td><td>14 - 27</td></tr><tr><td style="text-align: center;"><img src="legend/Rateofspreadmetersminute_4_27402.png" /></td><td>27 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/Rateofspreadmetersminute_4_40533.png" /></td><td>40 - 53</td></tr><tr><td style="text-align: center;"><img src="legend/Rateofspreadmetersminute_4_53664.png" /></td><td>53 - 66</td></tr></table>': layer_Rateofspreadmetersminute_4,'Land use<br /><table><tr><td style="text-align: center;"><img src="legend/Landuse_3_Agricultura0.png" /></td><td>Agricultura</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Espaçosdescobertosoucompoucavegetação1.png" /></td><td>Espaços descobertos ou com pouca vegetação</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Florestas2.png" /></td><td>Florestas</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Massasdeáguasuperficiais3.png" /></td><td>Massas de água superficiais</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Matos4.png" /></td><td>Matos</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Pastagens5.png" /></td><td>Pastagens</td></tr><tr><td style="text-align: center;"><img src="legend/Landuse_3_Territóriosartificializados6.png" /></td><td>Territórios artificializados</td></tr></table>': layer_Landuse_3,"Altitudes": layer_Altitudes_2,"OSM Standard": layer_OSMStandard_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
+        setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>
